@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Game {
+  id          Int     @id @default(autoincrement())
+  name        String
+  imageUrl    String
+  characters  Character[]
+  scores      Score[]
+}
+
+model Character {
+  id      Int     @id @default(autoincrement())
+  name    String
+  x       Int
+  y       Int
+  game    Game  @relation(fields: [gameId], references: [id])
+  gameId  Int
+}
+
+model Score {
+  id          Int     @id @default(autoincrement())
+  username    String 
+  timestamp   DateTime  @default(now())
+  time        Int
+  game        Game  @relation(fields: [gameId], references: [id])
+  gameId      Int
+}
+
