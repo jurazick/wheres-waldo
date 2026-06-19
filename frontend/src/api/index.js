@@ -22,4 +22,5 @@ async function request(path, options = {}) {
 
 export const api = {
     getGames: () => request("/games"),
+    getGame: (id) => request(`/games/${id}`),
 };
