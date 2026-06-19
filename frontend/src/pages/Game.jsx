@@ -4,6 +4,7 @@ import { api } from "../api"
 import Character from "../components/Character"
 import { useParams } from "react-router"
 import { useGame } from "../context/GameContext"
+import toast from "react-hot-toast"
 
 
 export default function Game() {
@@ -37,34 +38,40 @@ export default function Game() {
         setBox(prev => ({...prev, show: false}))
         if (Math.abs(box.x - game.characters[index].x) <= 2 && Math.abs(box.y - game.characters[index].y) <= 3) {
             setFound(prev => [...prev, game.characters[index].name])
+            toast.success(`Found ${game.characters[index].name}!`)
+        } else {
+            toast.error(`Thats not ${game.characters[index].name}!`)
         }
     }
 
     if (!game) return(<>Error loading</>)
 
     return(
-        <>
-            <h1>Level: {game.name}</h1>
-            <div className="flex flex-row justify-center gap-5">
-                {game.characters.map((character) => (
-                    <div key={character.name} className="flex flex-col items-center">
-                        <div className={`rounded-full border-2 ${found.includes(character.name) ? "border-green-600" : "border-black"}`}>
-                            <Character imageUrl={game.imageUrl} x={character.x} y={character.y} />
+        <div className="flex flex-col items-center">
+            <h1 className="my-5 text-2xl font-black">Level: {game.name}</h1>
+                <div className="sticky top-0 z-50 bg-white p-4 shadow flex flex-row justify-center gap-5">
+                    {game.characters.map((character) => (
+                        <div key={character.name} className="flex flex-col items-center">
+                            <div className={`rounded-full border-2 ${found.includes(character.name) ? "border-green-600" : "border-black"}`}>
+                                <Character imageUrl={game.imageUrl} x={character.x} y={character.y} />
+                            </div>
+                            <p className={`${found.includes(character.name) && "line-through"}`}>{character.name}</p>
                         </div>
-                        <p className={`${found.includes(character.name) && "line-through"}`}>{character.name}</p>
-                    </div>
-                    
-                ))}
-            </div>
+                    ))}
+                </div>
             
-            <div className="flex justify-center">
-                <img className="cursor-crosshair h-150" onClick={handleClick} src={game.imageUrl}></img>
+            
+            <div className="p-10">
+                <img className="cursor-crosshair rounded-xl " onClick={handleClick} src={game.imageUrl}></img>
                 {box.show && (
-                    <div className={`absolute`} style={{top: box.top-10, left: box.left-40}}>
+                    <div className={`absolute`} style={{top: box.top-20 + scrollY, left: box.left-40 + scrollX}}>
                         <TargetBox handleSubmit={handleSubmit} characters={game.characters} />
                     </div>
                 )}
             </div>
-        </>
+
+
+                <p className="sticky bottom-5 bg-white p-2 mt-2 border-2 text-2xl font-bold rounded-2xl">00:00</p>
+        </div>
     )
 }
