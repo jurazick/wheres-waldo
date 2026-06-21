@@ -9,7 +9,7 @@ import Leaderboard from './pages/Leaderboard.jsx'
 import GameProvider from './context/GameContext.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <GameProvider>
       <BrowserRouter>
         <Routes>
@@ -22,5 +22,5 @@ createRoot(document.getElementById('root')).render(
       </BrowserRouter>
     </GameProvider>
     
-  </StrictMode>,
+  // </StrictMode>,
 )
