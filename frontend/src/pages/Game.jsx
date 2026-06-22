@@ -6,6 +6,7 @@ import { useParams } from "react-router"
 import { useGame } from "../context/GameContext"
 import toast from "react-hot-toast"
 import GameOver from "../components/GameOver"
+import Loading from "../components/Loading"
 
 
 
@@ -68,7 +69,7 @@ export default function Game() {
         }
     }
 
-    if (!scene) return(<>Error loading</>)
+    if (!scene || loading) return(<Loading />)
 
     
 
@@ -89,7 +90,7 @@ export default function Game() {
             
             <div className="p-10">
                 <img className="cursor-crosshair rounded-xl " onClick={handleClick} src={scene.imageUrl}></img>
-                {box.show && (
+                {(box.show && !gameOver) && (
                     <div className={`absolute`} style={{top: box.top-20 + scrollY, left: box.left-40 + scrollX}}>
                         <TargetBox handleSubmit={handleSubmit} characters={scene.characters} />
                     </div>

@@ -1,26 +1,21 @@
-import { Link, useNavigate } from "react-router"
+import { useNavigate } from "react-router"
 import { useGame } from "../context/GameContext"
+import Loading from "../components/Loading"
 
 export default function HomeScreen() {
     const navigate = useNavigate()
     const {scenes, loading} = useGame()
 
-    if (loading) return(<>Loading</>)
+    if (loading) return(<Loading />)
     return(<>
         <div className="flex flex-col items-center p-10">
-                {/* <p>How to play:</p>
-                <li>There are 3 hidden characters in each scene</li>
-                <li>Choose a scene and look for the hidden characters</li>
-                <li>When you find one of the characters, click on it and mark the matching character</li>
-                <li>Your goal is to find all 3 characters in the shortest amount of time possible</li>
-                <li>Good luck!</li> */}
             <p className="mb-10 text-3xl font-semibold ">Choose a scene</p>
             <div className="grid grid-cols-3 gap-10 mx-20">
                 {scenes.map((scene) => (                    
                     <div key={scene.id} className="flex flex-col items-center gap-3">
                         <p className="text-2xl font-bold">{scene.name}</p>
-                        <div  className="border">
-                            <div className="group relative h-60 overflow-clip">
+                        <div onClick={() => navigate(`/scenes/${scene.id}`)} className="cursor-pointer border">
+                            <div className="group relative aspect-video w-full overflow-hidden">
                                 <img src={scene.imageUrl} />
                                 <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/30" />
                                 <button onClick={() => navigate(`/scenes/${scene.id}`)} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer bg-green-700 px-3 py-1 text-white text-xl font-bold opacity-0 transition-opacity duration-200 group-hover:opacity-100 hover:bg-green-600">Play</button>

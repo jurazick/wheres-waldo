@@ -10,9 +10,16 @@ export default function GameProvider({children}) {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        api.getGames()
-        .then(data => {setScenes(data.games)})
-        .finally(() => setLoading(false))
+        async function init(){
+            try {
+                const data = await api.getGames()
+                setScenes(data.games)
+            } catch (error) {
+                console.log(error)
+            }
+            setLoading(false)
+        }
+        init()
     },[])
 
     return(

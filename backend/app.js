@@ -74,7 +74,9 @@ app.post("/round/finish", async (req, res) => {
 
 app.get("/scores", async (req, res) => {
     try {
-        const scores = await prisma.score.findMany();
+        const scores = await prisma.score.findMany({
+            orderBy: { time: "asc" },
+        });
         res.status(200).json({ scores });
     } catch (error) {
         res.status(500).json({ error: "Error getting scores" });
@@ -82,10 +84,14 @@ app.get("/scores", async (req, res) => {
 });
 app.post("/scores", async (req, res) => {
     const { username, roundId } = req.body;
-    if (!username || !roundId)
+    if (!username)
+        return res.status(400).json({ error: "Username is required!" });
+
+    if (!roundId)
         return res
             .status(400)
-            .json({ error: "Username and Round ID are required!" });
+            .json({ error: "Round is expired or does not exist!" });
+
     try {
         const round = await prisma.round.findUnique({
             where: { id: Number(roundId) },
