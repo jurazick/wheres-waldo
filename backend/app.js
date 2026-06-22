@@ -64,7 +64,7 @@ app.post("/round/finish", async (req, res) => {
                 finishedAt: new Date(),
             },
         });
-        const time = round.startedAt - round.finishedAt;
+        const time = round.finishedAt - round.startedAt;
         res.status(200).json({ time });
     } catch (error) {
         console.log(error);
@@ -87,11 +87,11 @@ app.post("/scores", async (req, res) => {
             .status(400)
             .json({ error: "Username and Round ID are required!" });
     try {
-        const round = prisma.round.findUnique({
+        const round = await prisma.round.findUnique({
             where: { id: Number(roundId) },
         });
-        const time = round.startedAt - round.finishedAt;
-        const score = prisma.score.create({
+        const time = round.finishedAt - round.startedAt;
+        const score = await prisma.score.create({
             data: { username, time, gameId: round.gameId },
         });
         res.status(201).json({ score });

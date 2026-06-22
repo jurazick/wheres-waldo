@@ -5,30 +5,41 @@ import Character from "../components/Character"
 import { useParams } from "react-router"
 import { useGame } from "../context/GameContext"
 import toast from "react-hot-toast"
+import GameOver from "../components/GameOver"
 
-function timeString(seconds) {
-    const m = parseInt(seconds / 60) 
-    const s = seconds - (m * 60)
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2,'0')}`
-}
+
 
 export default function Game() {
     const {sceneId} = useParams()
     const {scenes, loading} = useGame()
+    const [roundId, setRoundId] = useState(null)
     const [box, setBox] = useState({x: 0, y: 0, top: 0, left: 0, show: false})
     const [scene, setScene] = useState(null)
     const [found, setFound] = useState([])
     const [elapsed, setElapsed] = useState(0)
+    const [gameOver, setGameOver] = useState(false)
+    const [score, setScore] = useState(null)
 
     useEffect(() => {
         try {
             setScene(scenes.find(scene => scene.id === Number(sceneId)))
-            setInterval(() => setElapsed(prev => prev+1), 1000)
+            api.startRound(sceneId)
+            .then(data => setRoundId(data.roundId))
         } catch(err) {
             console.log(err)
         }
         
     }, [scenes, sceneId])
+
+    useEffect(() => {
+        if (gameOver) return;
+
+        const interval = setInterval(() => {
+            setElapsed(prev => prev + 1);
+        }, 100);
+
+        return () => clearInterval(interval);
+    }, [gameOver]);
 
     function handleClick(e) {
         const rect = e.target.getBoundingClientRect();
@@ -44,6 +55,12 @@ export default function Game() {
     function handleSubmit(index) {
         setBox(prev => ({...prev, show: false}))
         if (Math.abs(box.x - scene.characters[index].x) <= 2 && Math.abs(box.y - scene.characters[index].y) <= 3) {
+            if (found.length === scene.characters.length - 1) {
+                clearInterval()
+                setGameOver(true)
+                api.finishRound(roundId)
+                .then(data => setScore(Math.floor(data.time)))
+            }
             setFound(prev => [...prev, scene.characters[index].name])
             toast.success(`Found ${scene.characters[index].name}!`)
         } else {
@@ -52,6 +69,8 @@ export default function Game() {
     }
 
     if (!scene) return(<>Error loading</>)
+
+    
 
     return(
         <div className="flex flex-col items-center">
@@ -86,7 +105,10 @@ export default function Game() {
             </div>
 
 
-                <p className="sticky bottom-5 bg-white p-2 mt-2 border-2 text-2xl font-bold rounded-2xl">{timeString(elapsed)}</p>
+                <p className="sticky bottom-5 bg-white p-2 mt-2 border-2 text-2xl font-bold rounded-2xl">{`${elapsed/10}s`}</p>
+            {gameOver && (
+                <GameOver score={score} roundId={roundId} />
+            )}
         </div>
     )
 }
