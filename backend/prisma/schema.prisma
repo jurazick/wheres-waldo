@@ -17,7 +17,7 @@ model Game {
   name        String
   imageUrl    String
   characters  Character[]
-  scores      Score[]
+  rounds      Score[]
 }
 
 model Character {
@@ -31,10 +31,17 @@ model Character {
 
 model Score {
   id          Int     @id @default(autoincrement())
-  username    String 
-  timestamp   DateTime  @default(now())
-  time        Int
+  username    String?
+  time        Int?
+  createdAt   DateTime  @default(now())
   game        Game  @relation(fields: [gameId], references: [id])
   gameId      Int
+}
+
+model Round {
+  id          Int     @id @default(autoincrement())
+  gameId      Int
+  startedAt   DateTime  @default(now())
+  finishedAt  DateTime?
 }
 
