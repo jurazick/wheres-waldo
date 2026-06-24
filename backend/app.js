@@ -7,7 +7,7 @@ import scoreRouter from "./routes/scoreRouter.js";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: process.env.FRONTEND_SITE }));
 app.use(express.json());
 
 app.use("/games", gameRouter);
