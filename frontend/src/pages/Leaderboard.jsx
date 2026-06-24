@@ -10,16 +10,17 @@ export default function Leaderboard() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        async function init() {
+        async function fetchScores() {
+            setLoading(true)
             try {
-                const data = await api.getScores()
+                const data = await api.getGameScores(sceneId)
                 setScores(data.scores)
             } catch (error) {
                 console.log(error)
             }
             setLoading(false) }
-        init()
-    }, [])
+        if (sceneId) fetchScores()
+    }, [sceneId])
 
     useEffect(() => {
         if (scenes?.length && !sceneId) {
@@ -27,15 +28,13 @@ export default function Leaderboard() {
         }
     }, [scenes, sceneId]);
 
-
-
     if (loading || !scenes) return(<Loading />)
 
     return(<>
         <div className="flex flex-col items-center p-10 mt-10 gap-5">
             <p className="text-3xl font-bold">Leaderboard</p>
             <div className="flex flex-col items-center p-10 bg-white rounded-2xl min-w-2xl">
-                <select onChange={(e) => setSceneId(Number(e.target.value))} className="border-b bg-gray-200 rounded text-xl px-1 py-2 ">
+                <select value={sceneId} onChange={(e) => setSceneId(Number(e.target.value))} className="border-b bg-gray-200 rounded text-xl px-1 py-2 ">
                     {scenes.map(({id, name}) => (
                         <option key={id} value={id}>{name}</option>
                     ))}

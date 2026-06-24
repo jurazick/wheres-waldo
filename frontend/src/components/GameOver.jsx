@@ -18,8 +18,8 @@ export default function GameOver({score, roundId}) {
                 async () => await api.submitScore(username, roundId),
                 {
                     loading: 'Saving...',
-                    success: 'Saved Score!',
-                    error: 'Error saving!',
+                    success: <b>Saved Score!</b>,
+                    error: <b>Error saving!</b>,
                 }
             )
             

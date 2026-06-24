@@ -12,7 +12,7 @@ const getAllScores = async (req, res) => {
 };
 
 const getGameScores = async (req, res) => {
-    const { gameId } = req.params();
+    const { gameId } = req.params;
     try {
         const scores = await prisma.score.findMany({
             where: { gameId: Number(gameId) },

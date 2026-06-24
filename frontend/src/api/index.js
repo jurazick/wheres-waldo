@@ -22,6 +22,11 @@ async function request(path, options = {}) {
 
 export const api = {
     getGames: () => request("/games"),
+    validatePosition: (gameId, characterId, x, y) =>
+        request(`/games/${gameId}/validate`, {
+            method: "POST",
+            body: JSON.stringify({ characterId, x, y }),
+        }),
     startRound: (gameId) =>
         request("/round/start", {
             method: "POST",
@@ -33,6 +38,7 @@ export const api = {
             body: JSON.stringify({ roundId }),
         }),
     getScores: () => request("/scores"),
+    getGameScores: (gameId) => request(`/scores/game/${gameId}`),
     submitScore: (username, roundId) =>
         request("/scores", {
             method: "POST",

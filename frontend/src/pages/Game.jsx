@@ -49,13 +49,13 @@ export default function Game() {
 
         const x = (xImage * 100 / rect.width).toFixed(0)
         const y = (yImage * 100 / rect.height).toFixed(0)
-        console.log(`(${x}, ${y})`)
         setBox(prev => ({rect,x, y, top: e.clientY, left: e.clientX, show: !prev.show}))
     }
 
-    function handleSubmit(index) {
+    async function handleSubmit(index) {
         setBox(prev => ({...prev, show: false}))
-        if (Math.abs(box.x - scene.characters[index].x) <= 2 && Math.abs(box.y - scene.characters[index].y) <= 3) {
+        const data = await api.validatePosition(scene.id, scene.characters[index].id, box.x, box.y) 
+        if (data.found) {
             if (found.length === scene.characters.length - 1) {
                 clearInterval()
                 setGameOver(true)
@@ -63,9 +63,9 @@ export default function Game() {
                 .then(data => setScore(Math.floor(data.time)))
             }
             setFound(prev => [...prev, scene.characters[index].name])
-            toast.success(`Found ${scene.characters[index].name}!`)
+            toast.success(<b>Found {scene.characters[index].name}!</b>)
         } else {
-            toast.error(`Thats not ${scene.characters[index].name}!`)
+            toast.error(<b>Thats not {scene.characters[index].name}!</b>)
         }
     }
 
