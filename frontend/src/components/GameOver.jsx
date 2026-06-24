@@ -14,18 +14,12 @@ export default function GameOver({score, roundId}) {
         setError(null)
         setSubmitting(true)
         try {
-            toast.promise(
-                async () => await api.submitScore(username, roundId),
-                {
-                    loading: 'Saving...',
-                    success: <b>Saved Score!</b>,
-                    error: <b>Error saving!</b>,
-                }
-            )
-            
+            await api.submitScore(username, roundId)
             setSubmitted(true)
+            toast.success(<b>Score saved!</b>)
         } catch (error) {
             setError(error.message)
+            toast.error(<b>{error.message}!</b>)
         }
         setSubmitting(false)
     }
