@@ -6,7 +6,10 @@ export default function HomeScreen() {
     const navigate = useNavigate()
     const {scenes, loading} = useGame()
 
-    if (loading) return(<Loading />)
+    if (loading) return(<>
+    <Loading />
+    <p className="text-center animate-pulse">Server wake up initialized, this may take 20-30s...</p>
+    </>)
     return(<>
         <div className="flex flex-col items-center p-10">
             <p className="mb-10 text-3xl font-semibold ">Choose a scene</p>

@@ -52,8 +52,8 @@ export default function Leaderboard() {
                         {scores.filter(score => score.gameId === sceneId).map((score, index) => (
                         <tr key={score.id} className={`border-b border-zinc-300 ${index % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
                             <td className="p-2">{index + 1}</td>
-                            <td className="p-2">{score.username}</td>
-                            <td className="p-2">{(score.time / 1000).toFixed(2)}s</td>
+                            <td className="p-2">{score.username} {index === 0 && "🏆"}</td>
+                            <td className={`p-2 ${index < 2 && "text-green-700"}`}>{(score.time / 1000).toFixed(2)}s</td>
                         </tr>
                         ))}
                     </tbody>
